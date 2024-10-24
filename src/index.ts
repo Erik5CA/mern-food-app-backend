@@ -17,7 +17,7 @@ app.get("/health", async (req: Request, res: Response) => {
 });
 
 app.use("/api/my/user", myUserRoute);
-
-app.listen(7000, () => {
-  console.log("Server is running on port 7000");
+const PORT = process.env.PORT || 7000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
