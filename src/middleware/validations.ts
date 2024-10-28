@@ -34,9 +34,9 @@ export const validateMyRestauratRequest = [
   body("deliveryPrice")
     .isFloat({ min: 0 })
     .withMessage("Delivery price must be a positive number"),
-  body("estimateDeliveryTime")
+  body("estimatedDeliveryTime")
     .isInt({ min: 0 })
-    .withMessage("Estimate Delivery Time price must be a positive number"),
+    .withMessage("Estimated Delivery Time price must be a positive number"),
   body("cuisines")
     .isArray()
     .withMessage("Cuisines must be an array")

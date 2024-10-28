@@ -4,6 +4,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import myUserRoute from "./routes/myUserRoutes";
 import myRestaurantRoute from "./routes/myRestaurantRoute";
+import restaurantRoute from "./routes/restaurantRouter";
 import { v2 as cloudinary } from "cloudinary";
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string).then(() => {
@@ -27,6 +28,8 @@ app.get("/health", async (req: Request, res: Response) => {
 app.use("/api/my/user", myUserRoute);
 
 app.use("/api/my/restaurant", myRestaurantRoute);
+
+app.use("/api/restaurant", restaurantRoute);
 
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
