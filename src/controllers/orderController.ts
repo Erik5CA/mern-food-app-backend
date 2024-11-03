@@ -20,6 +20,7 @@ type CheckoutSessionRequest = {
     city: string;
   };
   restaurantId: string;
+  orderId?: string;
 };
 
 const getMyOrders = async (req: Request, res: Response) => {
@@ -46,14 +47,26 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       throw new Error("Restaurant Not Found");
     }
 
-    const newOrder = new Order({
+    const { orderId } = checkoutSessionRequest;
+
+    const orderValues = {
       restaurant: restaurant,
       user: req.userId,
       status: "placed",
       deliveryDetails: checkoutSessionRequest.detailsDelivery,
       cartItems: checkoutSessionRequest.cartItems,
       createdAt: new Date(),
-    });
+    };
+
+    let newOrder;
+    if (orderId) {
+      newOrder = await Order.findByIdAndUpdate(orderId, orderValues);
+      if (!newOrder) {
+        throw new Error("Restaurant Not Found");
+      }
+    } else {
+      newOrder = new Order(orderValues);
+    }
 
     const lineItems = createLineItems(
       checkoutSessionRequest,
@@ -71,7 +84,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "Error creating stripe session" });
     }
     await newOrder.save();
-    res.json({ url: session.url });
+    res.json({ url: session.url, orderId: newOrder._id.toString() });
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ message: error.raw.message });
