@@ -85,9 +85,12 @@ const createCheckoutSession = async (req: Request, res: Response) => {
     }
     await newOrder.save();
     res.json({ url: session.url, orderId: newOrder._id.toString() });
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.raw.message });
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    }
+    res.status(500).json({ message: (error as Stripe.StripeRawError).message });
   }
 };
 
@@ -157,9 +160,13 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
       sig as string,
       STRIPE_ENDPOINT_SECRET
     );
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
-    return res.status(400).send(`Webhook error: ${error.message}`);
+    return res
+      .status(400)
+      .send(
+        `Webhook error: ${(error as Error | Stripe.StripeRawError).message}`
+      );
   }
 
   if (event.type === "checkout.session.completed") {

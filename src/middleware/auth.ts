@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { NextFunction, Request, Response } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
 import jwt from "jsonwebtoken";
@@ -6,8 +7,8 @@ import User from "../models/user";
 declare global {
   namespace Express {
     interface Request {
-      userId: String;
-      auth0Id: String;
+      userId: string;
+      auth0Id: string;
     }
   }
 }
@@ -44,6 +45,7 @@ export const jwtParse = async (
     req.userId = user._id.toString();
     next();
   } catch (error) {
+    console.error(error);
     return res.sendStatus(401);
   }
 };

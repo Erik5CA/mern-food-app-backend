@@ -59,5 +59,3 @@ export default {
   updateCurrentUser,
   getCurrentUser,
 };
-
-// ABC123erik.

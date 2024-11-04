@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Restaurant from "../models/restaurant";
+import { MongooseQueryOptions } from "mongoose";
 
 const searchRestaurants = async (req: Request, res: Response) => {
   try {
@@ -10,7 +11,7 @@ const searchRestaurants = async (req: Request, res: Response) => {
     const sortOption = (req.query.sortOption as string) || "lastUpdated";
     const page = parseInt(req.query.page as string) || 1;
 
-    const query: any = {};
+    const query: MongooseQueryOptions = {};
 
     query["city"] = new RegExp(city, "i");
     const cityCheck = await Restaurant.countDocuments(query);
